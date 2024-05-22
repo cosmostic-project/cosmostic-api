@@ -1,0 +1,6 @@
+# KEEP THIS DIRECTORY
+# This directory is used to store database data
+
+# Ignore all files
+*
+!.gitignore

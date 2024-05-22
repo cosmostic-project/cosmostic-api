@@ -1,0 +1,68 @@
+version: '3.9'
+name: api
+
+services:
+  users-db:
+    image: mongo:latest
+    container_name: users-db
+    hostname: usersdb
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./usersdb/:/data/db
+    healthcheck:
+      test: echo 'db.runCommand({serverStatus:1}).ok' | mongosh admin --quiet | grep 1
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    restart: always
+    networks:
+      - mongo
+
+  cosmetics-db:
+    image: mongo:latest
+    container_name: cosmetics-db
+    hostname: cosmeticsdb
+    ports:
+      - '27018:27017'
+    volumes:
+      - ./cosmeticsdb/:/data/db
+    healthcheck:
+      test: echo 'db.runCommand({serverStatus:1}).ok' | mongosh admin --quiet | grep 1
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    restart: always
+    networks:
+      - mongo
+
+  api:
+    build: ./app
+    container_name: api
+    hostname: api
+    ports:
+      - '81:80'
+    volumes:
+      - ./logs/:/app/logs
+    environment:
+      - SECRET_KEY=${APPS_SECRET_KEY}
+      - USERS_DB_URI=mongodb://usersdb:27017
+      - COSMETICS_DB_URI=mongodb://cosmeticsdb:27017
+    restart: always
+    networks:
+      - mongo
+      - api
+    depends_on:
+      users-db:
+        condition: service_healthy
+      cosmetics-db:
+        condition: service_healthy
+
+networks:
+  mongo:
+    internal: true
+  api:
+    driver: bridge
+    name: api_network

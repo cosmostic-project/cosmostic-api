@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>COSMOSTIC Internal API</title>
+    <link rel="stylesheet" type="text/css" href="/swaggerui/swagger-ui.css" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='swaggerui.css') }}" />
+    <link rel="icon" type="image/png" href="/static/images/favicon.png" />
+  </head>
+
+  <body>
+    <div id="swagger-ui"></div>
+    <script src="/swaggerui/swagger-ui-bundle.js" charset="UTF-8"></script>
+    <script src="/swaggerui/swagger-ui-standalone-preset.js" charset="UTF-8"></script>
+    <script type="text/javascript">
+      window.onload = function() {
+          const ui = window.ui = new SwaggerUIBundle({
+              url: "/swagger.json",
+              
+              validatorUrl: "" || null,
+              dom_id: "#swagger-ui",
+              presets: [
+                  SwaggerUIBundle.presets.apis,
+                  SwaggerUIStandalonePreset.slice(1)
+              ],
+              plugins: [
+                  SwaggerUIBundle.plugins.DownloadUrl
+              ],
+              
+              displayOperationId: false,
+              displayRequestDuration: false,
+              docExpansion: "none"
+          })
+      }
+  </script>
+  </body>
+</html>
